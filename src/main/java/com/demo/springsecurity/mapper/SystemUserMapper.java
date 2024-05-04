@@ -1,6 +1,6 @@
 package com.demo.springsecurity.mapper;
 
-import com.demo.springsecurity.pojo.Students;
+import com.demo.springsecurity.pojo.SystemUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -12,11 +12,11 @@ import org.apache.ibatis.annotations.Update;
  */
 
 @Mapper
-public interface StudentsMapper {
+public interface SystemUserMapper {
 
-    @Update("update students set name = 'lisi' where studentId = #{id}")
+    @Update("update sys_user set username = 'lisi' where id = #{id}")
     void modifyStudentInfo(int id);
 
-    @Select("select * from students where username = #{username}")
-    Students findByUsername(String username);
+    @Select("select * from sys_user where username = #{username}")
+    SystemUser findByUsername(String username);
 }

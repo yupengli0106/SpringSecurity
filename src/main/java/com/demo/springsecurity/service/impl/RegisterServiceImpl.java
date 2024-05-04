@@ -17,35 +17,3 @@ public class RegisterServiceImpl {
 
 
 }
-
-//
-//package com.demo.springsecurity.service.impl;
-//
-//import com.demo.springsecurity.mapper.StudentsMapper;
-//import com.demo.springsecurity.mapper.RoleMapper;
-//import com.demo.springsecurity.mapper.UserRoleMapper;
-//import com.demo.springsecurity.pojo.Students;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//public class RegisterServiceImpl {
-//
-//    @Autowired
-//    private StudentsMapper studentsMapper;
-//
-//    @Autowired
-//    private RoleMapper roleMapper;
-//
-//    @Autowired
-//    private UserRoleMapper userRoleMapper;
-//
-//    public void register(Students student) {
-//        // Add the new user to the database
-//        studentsMapper.insert(student);
-//
-//        // Assign the default role to the new user
-//        int roleId = roleMapper.getDefaultRoleId();
-//        userRoleMapper.insert(student.getStudentID(), roleId);
-//    }
-//}

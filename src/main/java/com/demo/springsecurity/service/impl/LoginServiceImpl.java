@@ -1,9 +1,9 @@
 package com.demo.springsecurity.service.impl;
 
 import com.demo.springsecurity.controller.Response.ResponseResult;
-import com.demo.springsecurity.mapper.StudentsMapper;
+import com.demo.springsecurity.mapper.SystemUserMapper;
 import com.demo.springsecurity.pojo.LoginUser;
-import com.demo.springsecurity.pojo.Students;
+import com.demo.springsecurity.pojo.SystemUser;
 import com.demo.springsecurity.service.LoginService;
 import com.demo.springsecurity.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +25,14 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl implements LoginService {
     @Autowired
-    StudentsMapper studentsMapper;
+    SystemUserMapper systemUserMapper;
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     RedisTemplate redisTemplate;
 
     @Override
-    public ResponseResult login(Students student) {
+    public ResponseResult login(SystemUser student) {
         /**使用authenticationManager authenticate 进行用户认证*/
         //生成Authentication对象，传入用户名和密码
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(student.getUsername(), student.getPassword());
@@ -43,10 +43,10 @@ public class LoginServiceImpl implements LoginService {
             //获取认证通过的用户信息, 为什么要强转为LoginUser，因为我们在自定义的UserDetailsService中返回的是LoginUser
             //getPrincipal()方法返回是用来存放用户信息的，这里存放的是LoginUser
             LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-            Integer studentID = loginUser.getUser().getStudentID();
+            Long userID = loginUser.getUser().getId();
             String username = loginUser.getUser().getUsername();
             //生成token,这里使用map存放用户信息，生成token
-            Map<String, Object> map = Map.of("studentID", studentID, "username", username);
+            Map<String, Object> map = Map.of("userID", userID, "username", username);
             String token = JwtUtil.genToken(map);
 
             /** 把完整的用户信息存入到redis中 token : user */
@@ -54,10 +54,10 @@ public class LoginServiceImpl implements LoginService {
             redisTemplate.opsForValue().set(token, loginUser);
 
             //这里是直接返回token，实际开发中可以返回一个map，里面存放key为token，value为token的值
-            return new ResponseResult(200, "登录成功", token);
+            return ResponseResult.success(token);
 
         }else {
-            return new ResponseResult(500, "登录失败", null);
+            return ResponseResult.error(400,"登录失败");
         }
     }
 
@@ -76,7 +76,7 @@ public class LoginServiceImpl implements LoginService {
             // 根据token删除redis中的用户信息
             Boolean deleted = redisTemplate.delete(token);
             if (deleted == null || !deleted) {
-                return new ResponseResult(404, "Token not found or already removed", null);
+                return ResponseResult.error(400,"Token not found or already removed");
             }
 
             // 清空SecurityContextHolder中的用户
@@ -84,11 +84,11 @@ public class LoginServiceImpl implements LoginService {
             // 因此这里清空当前线程的用户信息，如果是多线程的话，其他线程的用户信息不会被清空
             SecurityContextHolder.clearContext();
 
-            return new ResponseResult(200, "Logged out successfully", null);
+            return ResponseResult.success(null);
         } catch (Exception e) {
             // 添加日志记录异常
             // TODO: Add log to record exception
-            return new ResponseResult(500, "Logout failed due to an internal error", null);
+            return ResponseResult.error(500, "Internal Server Error");
         }
     }
 

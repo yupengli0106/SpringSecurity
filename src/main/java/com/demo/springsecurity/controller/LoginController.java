@@ -1,7 +1,7 @@
 package com.demo.springsecurity.controller;
 
 import com.demo.springsecurity.controller.Response.ResponseResult;
-import com.demo.springsecurity.pojo.Students;
+import com.demo.springsecurity.pojo.SystemUser;
 import com.demo.springsecurity.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class LoginController {
     LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseResult login(@RequestBody Students student){
+    public ResponseResult login(@RequestBody SystemUser student){
         return loginService.login(student);
     }
 

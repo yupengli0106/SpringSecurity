@@ -1,7 +1,7 @@
 package com.demo.springsecurity.students;
 
 import com.demo.springsecurity.mapper.MenuMapper;
-import com.demo.springsecurity.mapper.StudentsMapper;
+import com.demo.springsecurity.mapper.SystemUserMapper;
 import com.demo.springsecurity.service.LoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ import java.util.List;
  */
 
 @SpringBootTest
-public class StudentsTest {
+public class SystemUserTest {
     @Autowired
     LoginService loginService;
     @Autowired
-    StudentsMapper studentsMapper;
+    SystemUserMapper systemUserMapper;
     @Autowired
     MenuMapper menuMapper;
 
@@ -29,17 +29,24 @@ public class StudentsTest {
     @Test
     public void BcryptTest() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encode = bCryptPasswordEncoder.encode("test");
+        String encode = bCryptPasswordEncoder.encode("test3");
         System.out.println(encode);
 
-        boolean matches = bCryptPasswordEncoder.matches("123456", "$2a$10$9.LLyzSmR3tS2hElX3VpW.xlw8by4oY.lzSWFAOjsrdscflDiuLCG");
+        boolean matches = bCryptPasswordEncoder.matches("test2", "$2a$10$mDY2Bg6/0BuAlnTaDYETcOUYWAoMFK/egsaaVQv4Lrxasvq/2FLbG");
         System.out.println(matches);
+    }
+
+    @Test
+    public void testSystemUserMapper() {
+        System.out.println(systemUserMapper.findByUsername("test2"));
     }
 
     @Test
     public void testMenuMapper() {
         List<String> strings = menuMapper.selectPermsByUserId(1L);
         System.out.println(strings);
-
     }
+
+
+
 }

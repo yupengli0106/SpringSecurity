@@ -2,7 +2,6 @@ package com.demo.springsecurity.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,10 +21,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginUser implements org.springframework.security.core.userdetails.UserDetails{
     //把我们自己的用户信息放到这个类中
-    private Students user;
+    private SystemUser user;
     private List<String> permissions;//需要重新封装
 
-    public LoginUser(Students user, List<String> permissions) {
+    public LoginUser(SystemUser user, List<String> permissions) {
         this.user = user;
         this.permissions = permissions;
     }

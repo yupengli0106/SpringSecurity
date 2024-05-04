@@ -1,8 +1,7 @@
 package com.demo.springsecurity.service;
 
 import com.demo.springsecurity.controller.Response.ResponseResult;
-import com.demo.springsecurity.pojo.Students;
-import jakarta.servlet.http.HttpServletRequest;
+import com.demo.springsecurity.pojo.SystemUser;
 
 /**
  * @Author: Yupeng Li
@@ -10,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * @Description:
  */
 public interface LoginService {
-    ResponseResult login(Students student);
+    ResponseResult login(SystemUser student);
 
     ResponseResult logout(String token);
 }
