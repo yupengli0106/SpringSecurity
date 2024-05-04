@@ -32,10 +32,10 @@ public class LoginServiceImpl implements LoginService {
     RedisTemplate redisTemplate;
 
     @Override
-    public ResponseResult login(SystemUser student) {
+    public ResponseResult login(SystemUser user) {
         /**使用authenticationManager authenticate 进行用户认证*/
         //生成Authentication对象，传入用户名和密码
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(student.getUsername(), student.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         //调用authenticate方法进行认证，这里必须要传入上一步转换的Authentication对象
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         if (authenticate.isAuthenticated()) {
@@ -70,7 +70,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public ResponseResult logout(String token) {
         if (token == null || token.isEmpty()) {
-            return new ResponseResult(400, "Token is empty or invalid", null);
+            return ResponseResult.error(400,"Token is empty or invalid");
         }
         try {
             // 根据token删除redis中的用户信息
