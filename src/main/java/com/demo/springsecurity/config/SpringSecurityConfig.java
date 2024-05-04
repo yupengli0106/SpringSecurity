@@ -1,6 +1,8 @@
 package com.demo.springsecurity.config;
 
 import com.demo.springsecurity.filter.JwtAuthenticationTokenFilter;
+import com.demo.springsecurity.handler.AccessDeniedHandlerImpl;
+import com.demo.springsecurity.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SpringSecurityConfig {
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private AuthenticationEntryPointImpl authenticationEntryPointImpl;
+
+    @Autowired
+    private AccessDeniedHandlerImpl accessDeniedHandlerImpl;
+
     /**
      * Security filter chain
      * @param http HttpSecurity instance
@@ -48,7 +57,13 @@ public class SpringSecurityConfig {
                 .httpBasic(Customizer.withDefaults())  // basic authentication
 
                 // Add custom JWT filter before UsernamePasswordAuthenticationFilter
-                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Add custom exception handling
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(authenticationEntryPointImpl)
+                        .accessDeniedHandler(accessDeniedHandlerImpl));
+
 
         return http.build();
     }

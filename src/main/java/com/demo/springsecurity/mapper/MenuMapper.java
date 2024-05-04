@@ -12,5 +12,10 @@ import java.util.List;
 
 @Mapper
 public interface MenuMapper {
+    /**
+     * 根据用户id查询用户权限
+     * @param userId 用户id
+     * @return 用户权限
+     */
     List<String> selectPermsByUserId(Long userId);
 }
