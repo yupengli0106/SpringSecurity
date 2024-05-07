@@ -17,6 +17,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
  * @Author: Yupeng Li
@@ -47,7 +52,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 不通过session获取security context
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 不通过session获取security context，因为我们使用JWT
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/users/login").permitAll()// permit /user/login request without authentication
@@ -59,13 +64,35 @@ public class SpringSecurityConfig {
                 // Add custom JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
 
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // enable cors
+
                 // Add custom exception handling
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPointImpl)
                         .accessDeniedHandler(accessDeniedHandlerImpl));
 
-
         return http.build();
+    }
+
+
+    /**
+     * Cors configuration source
+     * @return CorsConfigurationSource instance
+     * @Description: CorsConfigurationSource is the interface used to configure cors related beans.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        //TODO: 这里目前是允许所有的请求，实际开发中需要修改为为线上环境的域名
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 
     /**
