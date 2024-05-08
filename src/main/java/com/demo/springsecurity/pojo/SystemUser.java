@@ -19,12 +19,6 @@ import java.util.Date;
 @Entity
 @Table(name = "sys_user")
 public class SystemUser {
-//    private Integer StudentID;
-//    private String Name;
-//    private Integer Age;
-//    private String Major;
-//    private String username;
-//    private String password;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

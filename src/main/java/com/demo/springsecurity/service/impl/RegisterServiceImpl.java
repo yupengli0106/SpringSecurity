@@ -1,72 +1,53 @@
 package com.demo.springsecurity.service.impl;
 
-import jakarta.annotation.Resource;
+import com.demo.springsecurity.controller.Response.ResponseResult;
+import com.demo.springsecurity.mapper.SystemUserMapper;
+import com.demo.springsecurity.mapper.SystemUserRoleMapper;
+import com.demo.springsecurity.pojo.SystemUser;
+import com.demo.springsecurity.service.RegisterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: Yupeng Li
  * @Date: 4/5/2024 14:08
- * @Description:
+ * @Description: Register new user
  */
-public class RegisterServiceImpl {
+@Service
+public class RegisterServiceImpl implements RegisterService {
+    @Autowired
+    private SystemUserMapper systemUserMapper;
 
+    @Autowired
+    private SystemUserRoleMapper systemUserRoleMapper;
 
-    public void register() {
-        // 用户注册默认权限为user，在数据库中添加用户信息，权限为user
+    @Autowired
+    private BCryptPasswordEncoder PasswordEncoder;
 
+    @Override
+    public ResponseResult registerNewUser(SystemUser newUser) {
+        String username = newUser.getUsername();
+        String password = newUser.getPassword();
+        String hashPassword = PasswordEncoder.encode(password);
+
+        // Check if the username already exists
+        if (systemUserMapper.findByUsername(username) != null) {
+            return ResponseResult.error(400, "用户名已存在");
+        }
+
+        //insert new user into database
+        systemUserMapper.insertNewUser(username, hashPassword);
+        //get the user id
+        SystemUser user = systemUserMapper.findByUsername(username);
+        if (user == null) {
+            return ResponseResult.error(500, "用户注册失败");
+        }
+
+        //set default role for the new user
+        Long userID = user.getId();
+        systemUserRoleMapper.setDefaultRole(userID);
+
+        return ResponseResult.success("注册成功");
     }
-
-
 }
-
-
-//package com.demo.springsecurity.service.impl;
-//
-//import jakarta.annotation.Resource;
-//
-///**
-// * @Author: Yupeng Li
-// * @Date: 4/5/2024 14:08
-// * @Description:
-// */
-//public class RegisterServiceImpl {
-//
-//
-//    public void register() {
-//        // 用户注册默认权限为user，在数据库中添加用户信息，权限为user
-//
-//    }
-//
-//
-//}
-
-//
-//package com.demo.springsecurity.service.impl;
-//
-//import com.demo.springsecurity.mapper.SystemUserMapper;
-//import com.demo.springsecurity.mapper.RoleMapper;
-//import com.demo.springsecurity.mapper.UserRoleMapper;
-//import com.demo.springsecurity.pojo.SystemUser;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//public class RegisterServiceImpl {
-//
-//    @Autowired
-//    private SystemUserMapper studentsMapper;
-//
-//    @Autowired
-//    private RoleMapper roleMapper;
-//
-//    @Autowired
-//    private UserRoleMapper userRoleMapper;
-//
-//    public void register(SystemUser student) {
-//        // Add the new user to the database
-//        studentsMapper.insert(student);
-//
-//        // Assign the default role to the new user
-//        int roleId = roleMapper.getDefaultRoleId();
-//        userRoleMapper.insert(student.getStudentID(), roleId);
-//    }
-//}

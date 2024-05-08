@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 不通过session获取security context，因为我们使用JWT
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/users/login").permitAll()// permit /user/login request without authentication
+                        .requestMatchers("/users/login","/users/register").permitAll()// permit request without authentication
                         .anyRequest().authenticated() )// any other request need to be authenticated
 
                 .csrf(AbstractHttpConfigurer::disable) // disable csrf

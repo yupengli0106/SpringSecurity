@@ -1,6 +1,7 @@
 package com.demo.springsecurity.mapper;
 
 import com.demo.springsecurity.pojo.SystemUser;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -19,4 +20,7 @@ public interface SystemUserMapper {
 
     @Select("select * from sys_user where username = #{username}")
     SystemUser findByUsername(String username);
+
+    @Insert("insert into sys_user(username, password) values(#{username}, #{password})")
+    void insertNewUser(String username, String password);
 }
