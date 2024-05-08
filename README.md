@@ -4,7 +4,7 @@
 
 Reference：[三更草堂 （SpringSecurity框架教程-Spring Security+JWT实现项目级前端分离认证授权）](https://www.bilibili.com/video/BV1mm4y1X7Hc?p=1)
 
-![SpringSecurity](../SpringSecurity/images/SpringSecurity.png)
+![SpringSecurity](images/SpringSecurity.png)
 
 ## Login基本步骤
 
@@ -571,7 +571,7 @@ UsernamePasswordAuthenticationToken authenticationToken =
 
    
 
-   ![ROAC](../SpringSecurity/images/ROAC.png)
+   ![ROAC](images/ROAC.png)
 
    
 
