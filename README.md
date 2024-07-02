@@ -27,7 +27,12 @@ public interface SystemUserMapper {
 2. 实现Spring Security中的**UserDetailsService接口**(**必须实现)**
 
 ```java
-@Service
+...
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+@Service //一定不能忘记注入service！！！
 public class UserDetailServiceImpl implements UserDetailsService{
     @Autowired
     SystemUserMapper systemUserMapper;;
@@ -419,6 +424,8 @@ public class SpringSecurityConfig{
 这里我们通过前端的get请求，然后获取到用户的token。接着在Redis中根据key也就是token来删除用户的信息，再在SecurityContextHolder中删除当前用户的信息。
 
 清空SecurityContextHolder中的用户时不需要担心清空所有用户，因为使用了这里SpringSecurity使用到了ThreadLocal，所以不用担心线程安全问题。因此这里清空当前线程的用户信息，如果是多线程的话，其他线程的用户信息不会被清空。
+
+(**这里有一个需要注意的地方要注意在SecurityConfig里面一定要disable() logut的功能不然的话我们自定义的logout就无法实现！**``.logout(AbstractHttpConfigurer::disable)`` )
 
 1. Controller
 
